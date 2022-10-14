@@ -1,41 +1,22 @@
-import { StatusBar } from 'expo-status-bar';
-import { Button, StyleSheet, Text, View } from 'react-native';
-// import * as ReactNative from 'react-native'
+import * as React from 'react'
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Login from './src/components/Login'
+import StoreList from './src/components/StoreList'
+import SingleStore from './src/components/SingleStore';
+
+const Stack = createNativeStackNavigator()
+
 export default function App() {
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Hello TestyMcTest!!!</Text>
-      <Text style={styles.content}>Some text below the title that would serve to describe information about something relevant to said title and would contain the very information describing forementioned things.</Text>
-      <Text style={styles.title}>Another Title</Text>
-      <Text style={styles.content}>Some text below the title</Text>
-      <Text style={styles.title}>Hello TestyMcTest!!!</Text>
-      <Text style={styles.content}>Some text below the title</Text>
-      {/* <Button>Learn More</Button> */}
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="List of Stores" component={StoreList} />
+        <Stack.Screen name="SingleStore" component={SingleStore} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'aquamarine',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-  },
-  title: {
-    fontSize: 30
-  },
-  content: {
-    marginLeft: '15%',
-    marginRight: '15%',
-    marginTop: '4%',
-    marginBottom: '8%'
-  }
-});
 
