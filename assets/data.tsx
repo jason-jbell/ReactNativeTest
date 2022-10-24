@@ -38,4 +38,11 @@ const Shs: TStore = {
 
 const StoresList = [Jasons, Venessas, JimmyJons, Shs]
 
-export default StoresList
+const testStore: TStore = {
+  id: '69',
+  name: 'string',
+  address: 'string',
+  phone: 'string',
+  status: 'online',
+}
+export { StoresList, testStore }

@@ -55,6 +55,11 @@ export const storesListStyleSheet = StyleSheet.create({
   },
   storeInfo: {
     marginLeft: '1%', marginRight: '1%'
+  },
+  createAStoreContainer: {
+    height: '10%',
+    width: '50%',
+    backgroundColor: 'dodgerblue'
   }
 });
 
