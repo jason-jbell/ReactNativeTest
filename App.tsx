@@ -5,6 +5,7 @@ import Login from './src/components/Login'
 import StoreList from './src/components/StoreList'
 import SingleStore from './src/components/SingleStore';
 import CreateAStore from './src/components/CreateAStore';
+import CreateAccount from './src/components/CreateAccount';
 import { LogBox } from 'react-native';
 
 const Stack = createNativeStackNavigator()
@@ -15,6 +16,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Create Account" component={CreateAccount} />
         <Stack.Screen name="List of Stores" component={StoreList} />
         <Stack.Screen name="SingleStore" component={SingleStore} />
         <Stack.Screen name="Create a Store" component={CreateAStore} />

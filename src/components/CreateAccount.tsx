@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react'
 import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
-import { signInWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser, signOut } from 'firebase/auth'
+import { createUserWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser, signOut } from 'firebase/auth'
 import { auth } from '../../firebaseConfig';
 
-export default function Login({ navigation }: any) {
+export default function CreateAccount({ navigation }: any) {
   const [user, setUser] = useState<FirebaseUser>()
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
@@ -23,7 +23,6 @@ export default function Login({ navigation }: any) {
       .catch((error) => console.error(error))
     setUser(undefined)
   }
-
   const handleUserChange = (evt:any) => {
     setUsername(evt.nativeEvent.text)
   }
@@ -32,10 +31,9 @@ export default function Login({ navigation }: any) {
     setPass(evt.nativeEvent.text)
   }
 
-  const handleLogInSubmit = () => {
-    signInWithEmailAndPassword(auth, username, pass)
+  const handleCreateUser = () => {
+    createUserWithEmailAndPassword(auth, username, pass)
     .then((userCredential) => {
-      console.log('Logging in with:', username)
       const current = userCredential.user
       setUser(current)
       setUsername('')
@@ -56,8 +54,9 @@ export default function Login({ navigation }: any) {
   if (!user) {
     return (
       <View style={styles.container}>
+        
         <Text style={styles.title}>
-          POS 365 Login
+          Account Sign-up
         </Text>
         
         <TextInput 
@@ -84,41 +83,29 @@ export default function Login({ navigation }: any) {
         <Button
           color={'#2D2A28'}
           title="Submit"
-          onPress={handleLogInSubmit}
+          onPress={handleCreateUser}
           accessibilityLabel="submit"
           disabled={username === '' || pass === '' ? true : false}
         />
         <View style={styles.buttonSpacer} />
         <Button
           color={'#2D2A28'}
-          title="Create an Account"
-          onPress={() => navigation.navigate('Create Account')}
+          title="Go back"
+          onPress={() => navigation.goBack()}
         />
         <StatusBar style='dark'/>
       </View>
     );
   }
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
         Welcome {user.email}!
       </Text>
-
-      <View style={styles.buttonSpacer} />
-      <Button
-        color={'#2D2A28'}
-        title="Go to your List of Stores"
-        onPress={() => navigation.navigate('List of Stores')}
-      />
-      <View style={styles.buttonSpacer} />
-      <Button
-        color={'#2D2A28'}
-        title="Go to CREATE A STORE"
-        onPress={() => navigation.navigate('Create a Store')}
-      />
+      <Button title='Homepage' onPress={() => navigation.navigate('SingleStore')} />
       <Button title='Log out' onPress={handleSignOut} />
     </View>
+    // navigation.navigate('SingleStore')
   )
 }  
 
