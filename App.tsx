@@ -5,11 +5,12 @@ import Login from './src/components/Login'
 import StoreList from './src/components/StoreList'
 import SingleStore from './src/components/SingleStore';
 import CreateAStore from './src/components/CreateAStore';
+import { LogBox } from 'react-native';
 
 const Stack = createNativeStackNavigator()
+LogBox.ignoreLogs(['AsyncStorage has been extracted from react-native core'])
 
 export default function App() {
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -21,4 +22,5 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
 
