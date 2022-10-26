@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import { storesListStyleSheet as styles } from '../styles/GlobalStyles';
-import {StoresList} from '../../assets/data'
+import { StoresList } from '../../assets/data'
 
 const Jasons = StoresList[0]
 

@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import { StoresList, testStore }from '../../assets/data';
 import { TStore } from '../types';
 import { storesListStyleSheet as styles} from '../styles/GlobalStyles';
-import Header from './Header'
 import Footer from './Footer';
 import { useState } from 'react'
 
@@ -51,7 +50,6 @@ export default function StoreList({ navigation }: any) {
 
   return (
     <View style={{height:'100%'}}>
-      <Header />
       
       <View style={styles.mainViewContainer}>
       
