@@ -1,28 +1,26 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react'
 import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
-import { signInWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser, signOut } from 'firebase/auth'
-import { auth } from '../../firebaseConfig';
 
 export default function Login({ navigation }: any) {
-  const [user, setUser] = useState<FirebaseUser>()
+  // const [user, setUser] = useState<FirebaseUser>()
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
   const [pending, setPending] = useState(true)
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      if(currentUser) setUser(user)
-      if(pending) setPending(false)
-    })
-  }, [])
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (currentUser) => {
+  //     if(currentUser) setUser(user)
+  //     if(pending) setPending(false)
+  //   })
+  // }, [])
 
-  const handleSignOut = (evt:any) => {
-    signOut(auth)
-      .then(() => console.log('sign out successfull'))
-      .catch((error) => console.error(error))
-    setUser(undefined)
-  }
+  // const handleSignOut = (evt:any) => {
+  //   signOut(auth)
+  //     .then(() => console.log('sign out successfull'))
+  //     .catch((error) => console.error(error))
+  //   setUser(undefined)
+  // }
 
   const handleUserChange = (evt:any) => {
     setUsername(evt.nativeEvent.text)
@@ -33,27 +31,28 @@ export default function Login({ navigation }: any) {
   }
 
   const handleLogInSubmit = () => {
-    signInWithEmailAndPassword(auth, username, pass)
-    .then((userCredential) => {
-      console.log('Logging in with:', username)
-      const current = userCredential.user
-      setUser(current)
-      setUsername('')
-      setPass('')
-    })
-    .catch(error => {
-      if (error.code === 'auth/email-already-in-use') {
-        console.log('That email address is already in use!')
-      }
-      if (error.code === 'auth/invalid-email') {
-        console.log('That email address is invalid!')
-      }
+    console.log('submitted')
+    // signInWithEmailAndPassword(auth, username, pass)
+    // .then((userCredential) => {
+    //   console.log('Logging in with:', username)
+    //   const current = userCredential.user
+    //   setUser(current)
+    //   setUsername('')
+    //   setPass('')
+    // })
+    // .catch(error => {
+    //   if (error.code === 'auth/email-already-in-use') {
+    //     console.log('That email address is already in use!')
+    //   }
+    //   if (error.code === 'auth/invalid-email') {
+    //     console.log('That email address is invalid!')
+    //   }
 
-      console.error(error)
-    })
+    //   console.error(error)
+    // })
   }
 
-  if (!user) {
+  // if (!user) {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
@@ -97,29 +96,29 @@ export default function Login({ navigation }: any) {
         <StatusBar style='dark'/>
       </View>
     );
-  }
+  // }
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        Welcome {user.email}!
-      </Text>
+  // return (
+  //   <View style={styles.container}>
+  //     <Text style={styles.title}>
+  //       Welcome {user.email}!
+  //     </Text>
 
-      <View style={styles.buttonSpacer} />
-      <Button
-        color={'#2D2A28'}
-        title="Go to your List of Stores"
-        onPress={() => navigation.navigate('List of Stores')}
-      />
-      <View style={styles.buttonSpacer} />
-      <Button
-        color={'#2D2A28'}
-        title="Go to CREATE A STORE"
-        onPress={() => navigation.navigate('Create a Store')}
-      />
-      <Button title='Log out' onPress={handleSignOut} />
-    </View>
-  )
+  //     <View style={styles.buttonSpacer} />
+  //     <Button
+  //       color={'#2D2A28'}
+  //       title="Go to your List of Stores"
+  //       onPress={() => navigation.navigate('List of Stores')}
+  //     />
+  //     <View style={styles.buttonSpacer} />
+  //     <Button
+  //       color={'#2D2A28'}
+  //       title="Go to CREATE A STORE"
+  //       onPress={() => navigation.navigate('Create a Store')}
+  //     />
+  //     <Button title='Log out' onPress={handleSignOut} />
+  //   </View>
+  // )
 }  
 
 const styles = StyleSheet.create({

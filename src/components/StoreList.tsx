@@ -5,8 +5,6 @@ import { storesListStyleSheet as styles} from '../styles/GlobalStyles';
 import Footer from './Footer';
 import { useState } from 'react'
 
-import { getFirestore, setDoc, doc } from 'firebase/firestore'
-
 const renderStore = (store: TStore, idx: number, navigation: any) => {
   return (
   <TouchableOpacity key={idx} onPress={() => navigation.navigate('SingleStore')}>
@@ -36,18 +34,6 @@ export default function StoreList({ navigation }: any) {
   //   setStores([...stores, testStore])
   //   console.log('new storesList: ', StoresList.length, stores.length)
   // }
-
-  const firestore = getFirestore()
-  
-  const sendDataToFirebase = async () => {
-    console.log('pressed')
-    await setDoc(doc(firestore, "users", "user_id"), {
-      phone: "0923490273",
-      name: "test",
-      age: "69420"
-    })
-  }
-
   return (
     <View style={{height:'100%'}}>
       
@@ -63,9 +49,6 @@ export default function StoreList({ navigation }: any) {
         {/* create a form and submit button that takes in a TStore object and pushes it to the StoresList, causing a re-render I think */}
         <View style={styles.createAStoreContainer}>
           <Text>CREATE A STORE PLACEHOLDER</Text>
-          <TouchableOpacity onPress={sendDataToFirebase}>
-            <Text>PRESSMEEMEMEMEMEME</Text>
-          </TouchableOpacity>
         </View>
 
       </View>

@@ -1,28 +1,25 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react'
 import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
-import { createUserWithEmailAndPassword, onAuthStateChanged, User as FirebaseUser, signOut } from 'firebase/auth'
-import { auth } from '../../firebaseConfig';
 
 export default function CreateAccount({ navigation }: any) {
-  const [user, setUser] = useState<FirebaseUser>()
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
-  const [pending, setPending] = useState(true)
+  // const [pending, setPending] = useState(true)
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (currentUser) => {
-      if(currentUser) setUser(user)
-      if(pending) setPending(false)
-    })
-  }, [])
+  // useEffect(() => {
+  //   onAuthStateChanged(auth, (currentUser) => {
+  //     if(currentUser) setUser(user)
+  //     if(pending) setPending(false)
+  //   })
+  // }, [])
 
-  const handleSignOut = (evt:any) => {
-    signOut(auth)
-      .then(() => console.log('sign out successfull'))
-      .catch((error) => console.error(error))
-    setUser(undefined)
-  }
+  // const handleSignOut = (evt:any) => {
+  //   signOut(auth)
+  //     .then(() => console.log('sign out successfull'))
+  //     .catch((error) => console.error(error))
+  //   setUser(undefined)
+  // }
   const handleUserChange = (evt:any) => {
     setUsername(evt.nativeEvent.text)
   }
@@ -32,26 +29,26 @@ export default function CreateAccount({ navigation }: any) {
   }
 
   const handleCreateUser = () => {
-    createUserWithEmailAndPassword(auth, username, pass)
-    .then((userCredential) => {
-      const current = userCredential.user
-      setUser(current)
-      setUsername('')
-      setPass('')
-    })
-    .catch(error => {
-      if (error.code === 'auth/email-already-in-use') {
-        console.log('That email address is already in use!')
-      }
-      if (error.code === 'auth/invalid-email') {
-        console.log('That email address is invalid!')
-      }
+    // createUserWithEmailAndPassword(auth, username, pass)
+    // .then((userCredential) => {
+    //   const current = userCredential.user
+    //   setUser(current)
+    //   setUsername('')
+    //   setPass('')
+    // })
+    // .catch(error => {
+    //   if (error.code === 'auth/email-already-in-use') {
+    //     console.log('That email address is already in use!')
+    //   }
+    //   if (error.code === 'auth/invalid-email') {
+    //     console.log('That email address is invalid!')
+    //   }
 
-      console.error(error)
-    })
+    //   console.error(error)
+    // })
   }
 
-  if (!user) {
+  // if (!user) {
     return (
       <View style={styles.container}>
         
@@ -96,17 +93,17 @@ export default function CreateAccount({ navigation }: any) {
         <StatusBar style='dark'/>
       </View>
     );
-  }
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>
-        Welcome {user.email}!
-      </Text>
-      <Button title='Homepage' onPress={() => navigation.navigate('SingleStore')} />
-      <Button title='Log out' onPress={handleSignOut} />
-    </View>
-    // navigation.navigate('SingleStore')
-  )
+  // }
+  // return (
+  //   <View style={styles.container}>
+  //     <Text style={styles.title}>
+  //       Welcome {user.email}!
+  //     </Text>
+  //     <Button title='Homepage' onPress={() => navigation.navigate('SingleStore')} />
+  //     <Button title='Log out' onPress={handleSignOut} />
+  //   </View>
+  //   // navigation.navigate('SingleStore')
+  // )
 }  
 
 const styles = StyleSheet.create({
