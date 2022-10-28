@@ -21,26 +21,61 @@ mongoose.connection.on('error', (error) => {
   console.error(error);
 });
 
-app.get('/', (req, res) => {
-  res.send(App);
-});
+// app.get('/', (req, res) => {
+//   res.send(App);
+// });
 
-app.post('/send', (req, res, next) => {
-  const curr = req.body;
+// app.put('/update', (req, res, next) => {
+//   try {
+//     const store = Store.findOne({
+//       where: {
+//         id: req.body.id
+//       }
+//     })
+//   } catch (error) {
+
+//   }
+// });
+
+app.post('/send', async (req, res, next) => {
+  const { name, phone, address, status } = req.body;
   const store = new Store({
-    name: curr.name,
-    phone: curr.phone,
-    address: curr.address,
-    status: curr.status,
+    name,
+    phone,
+    address,
+    status,
   });
+
   try {
-    store.save();
+    await store.save();
+    console.log('saved');
     res.send('successful post');
   } catch (e) {
     console.error(e);
   }
 });
-
+app.delete('/delete', async (req, res, next) => {
+  try {
+    const store = Store.findById(req.body.id);
+    await Store.deleteOne(store);
+    res.send('deleted');
+  } catch (e) {
+    console.error(e);
+  }
+});
+// app.post('/delete', async (req, res, next) => {
+//   try {
+//     await Store.findByIdAndRemove(req.body.id);
+//     res.send('deleted');
+//   } catch (e) {
+//     console.error(e);
+//   }
+// });
+app.use((err, req, res, next) => {
+  res
+    .status(err.status || 500)
+    .send(err.message || "Internal server error, you're fucked!");
+});
 app.listen(3000, () => {
   console.log('Fuckin it up on port 3000');
 });
