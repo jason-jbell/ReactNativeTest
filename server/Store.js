@@ -1,19 +1,22 @@
 const mongoose = require('mongoose');
 
-const StoreSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    // required: true
+const StoreSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      // required: true
+    },
+    phone: {
+      type: String,
+      // required: true
+    },
+    address: {
+      type: String,
+      // required: true
+    },
+    status: 'Online' | 'Offline',
   },
-  phone: {
-    type: String,
-    // required: true
-  },
-  address: {
-    type: String,
-    // required: true
-  },
-  status: 'Online' | 'Offline',
-});
+  { collection: 'stores' }
+);
 
-mongoose.model('store', StoreSchema);
+exports.Store = mongoose.model('store', StoreSchema);
