@@ -3,12 +3,13 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 require('./Store');
-const pass = process.env.PASSWORD;
+require('dotenv').config();
+const PASS = process.env.PASSWORD;
 app.use(bodyParser.json());
 
 const Store = mongoose.model('store');
 
-const uri = `mongodb+srv://Jasonjbell:${pass}@pos365-jasonbell.l36uwdx.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://Jasonjbell:${PASS}@pos365-jasonbell.l36uwdx.mongodb.net/?retryWrites=true&w=majority`;
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
