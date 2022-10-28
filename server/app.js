@@ -21,56 +21,74 @@ mongoose.connection.on('error', (error) => {
   console.error(error);
 });
 
-// app.get('/', (req, res) => {
-//   res.send(App);
-// });
+// GET all stores
+app.get('/stores', async (req, res, next) => {
+  try {
+    const stores = await Store.find();
+    res.send(stores);
+  } catch (e) {
+    next(e);
+  }
+});
+// GET one store by params id
+app.get('/stores/:id', async (req, res, next) => {
+  try {
+    const store = await Store.findById(req.params.id);
+    res.send(store);
+  } catch (e) {
+    next(e);
+  }
+});
+// PUT update route by params id
+app.put('/update/:id', async (req, res, next) => {
+  try {
+    const { name, phone, address, status } = req.body;
+    const store = await Store.findById(req.params.id);
 
-// app.put('/update', (req, res, next) => {
-//   try {
-//     const store = Store.findOne({
-//       where: {
-//         id: req.body.id
-//       }
-//     })
-//   } catch (error) {
+    if (name) {
+      store.name = name;
+    }
+    if (phone) {
+      store.phone = phone;
+    }
+    if (address) {
+      store.address = address;
+    }
+    if (store.status !== status) {
+      store.status === status;
+    }
 
-//   }
-// });
-
+    await store.save().then(res.send(store));
+  } catch (e) {
+    next(e);
+  }
+});
+// POST route by req.body
 app.post('/send', async (req, res, next) => {
-  const { name, phone, address, status } = req.body;
-  const store = new Store({
-    name,
-    phone,
-    address,
-    status,
-  });
+  try {
+    const { name, phone, address, status } = req.body;
+    const store = await new Store({
+      name,
+      phone,
+      address,
+      status,
+    });
+    await store.save().then(res.send('Successfully posted'));
+  } catch (e) {
+    next(e);
+  }
+});
+// DELETE route by params id
+app.delete('/delete/:id', async (req, res, next) => {
+  try {
+    await Store.findByIdAndDelete(req.params.id).then(
+      res.send('Successfully deleted')
+    );
+  } catch (e) {
+    next(e);
+  }
+});
 
-  try {
-    await store.save();
-    console.log('saved');
-    res.send('successful post');
-  } catch (e) {
-    console.error(e);
-  }
-});
-app.delete('/delete', async (req, res, next) => {
-  try {
-    const store = Store.findById(req.body.id);
-    await Store.deleteOne(store);
-    res.send('deleted');
-  } catch (e) {
-    console.error(e);
-  }
-});
-// app.post('/delete', async (req, res, next) => {
-//   try {
-//     await Store.findByIdAndRemove(req.body.id);
-//     res.send('deleted');
-//   } catch (e) {
-//     console.error(e);
-//   }
-// });
 app.use((err, req, res, next) => {
   res
     .status(err.status || 500)
@@ -79,17 +97,3 @@ app.use((err, req, res, next) => {
 app.listen(3000, () => {
   console.log('Fuckin it up on port 3000');
 });
-
-// const { MongoClient, ServerApiVersion } = require('mongodb');
-
-// const client = new MongoClient(uri, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   serverApi: ServerApiVersion.v1,
-// });
-
-// client.connect((err) => {
-//   const collection = client.db('test').collection('devices');
-//   // perform actions on the collection object
-//   client.close();
-// });
