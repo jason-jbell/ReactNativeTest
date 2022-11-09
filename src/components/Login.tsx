@@ -2,25 +2,33 @@ import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react'
 import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
 import Axios from 'axios'
-export default function Login({ navigation }: any) {
-  const [user, setUser] = useState<TUser>()
+import { TOwner } from '../types';
+
+
+export default function Login({ navigation }: any, loggedInUser?: TOwner) {
+  const [owner, setOwner] = useState<TOwner>()
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
   const [pending, setPending] = useState(true)
+  const [test, setTest] = useState(0)
 
-type TUser = {
-  email: string,
-  password: string
-}
 
-  useEffect(() => {
-    if(pending) setPending(false)
-    navigation.navigate('List of Stores')
-  }, [user])
+  // if (loggedInUser && test === 0) {
+  //   setUser(loggedInUser)
+  //   setTest(test + 1)
+  //   console.log('successfully brought over user: ', user)
+  // }
+
+
+  // useEffect(() => {
+  //   if (pending) setPending(false)
+  //   if (user !== undefined && test > 1) navigation.navigate('List of Stores')
+    
+  // }, [user])
 
   const handleSignOut = (evt:any) => {
-    console.log('SIGNOUT')
-    setUser(undefined)
+    setOwner(undefined)
+    navigation.navigate('Login')
   }
 
   const handleUserChange = (evt:any) => {
@@ -36,29 +44,30 @@ type TUser = {
       // await fetch(
       //   'http://localhost:8080/user/login', { method: 'POST', headers: { 'Content-Type': 'application/json', body: JSON.stringify({ email: username, password: pass}) }}
       // ).then((response) => response.json())
-      const res = (await Axios.post('http://localhost:8080/user/login', {email: username, password: pass})).data
-      setUser(res.user)
+      const res = (await Axios.post('http://localhost:8080/owner/login', {email: username, password: pass})).data
+      setOwner(res.owner)
+      setTest(test + 1)
       setUsername('')
       setPass('')
-    } catch (e) {
+    } catch (e:any) {
+        if (e.code === 'auth/email-already-in-use') {
+          console.log('That email address is already in use!')
+        }
+        if (e.code === 'auth/invalid-email') {
+          console.log('That email address is invalid!')
+        }
       return (
         <View>
           <Text>{JSON.stringify(e)}</Text>
         </View>
       )
     }
-    //   if (error.code === 'auth/email-already-in-use') {
-    //     console.log('That email address is already in use!')
-    //   }
-    //   if (error.code === 'auth/invalid-email') {
-    //     console.log('That email address is invalid!')
-    //   }
 
     //   console.error(error)
     // })
   }
 
-  if (!user) {
+  if (!owner) {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>
@@ -70,7 +79,7 @@ type TUser = {
           keyboardType='default'
           maxLength={60}
           value={username}
-          placeholder='Username'
+          placeholder='E-mail'
           onChange={handleUserChange}
           autoCapitalize='none'
         />
@@ -107,7 +116,7 @@ type TUser = {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        Welcome {user.email}!
+        Welcome {owner.email}!
       </Text>
 
       <View style={styles.buttonSpacer} />

@@ -1,10 +1,42 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState, useEffect } from 'react'
 import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
+import Axios from 'axios'
 
 export default function CreateAccount({ navigation }: any) {
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
+
+  const handleCreateUser = async () => {
+    try {
+      // await fetch(
+      //   'http://localhost:8080/user/login', { method: 'POST', headers: { 'Content-Type': 'application/json', body: JSON.stringify({ email: username, password: pass}) }}
+      // ).then((response) => response.json())
+      const res = (await Axios.post('http://localhost:8080/owner/signup', {email: username, password: pass})).data
+      // setUser(res.owner)
+        .then(() => {
+          console.log('AFTER AWAIT')
+          navigation.navigate('Login', {owner: res.owner, token: res.token})})
+      setUsername('')
+      setPass('')
+    } catch (e:any) {
+        if (e.code === 'auth/email-already-in-use') {
+          console.log('That email address is already in use!')
+        }
+        if (e.code === 'auth/invalid-email') {
+          console.log('That email address is invalid!')
+        }
+      return (
+        <View>
+          <Text>{JSON.stringify(e)}</Text>
+        </View>
+      )
+    }
+
+    //   console.error(error)
+    // })
+  }
+
   // const [pending, setPending] = useState(true)
 
   // useEffect(() => {
@@ -28,7 +60,7 @@ export default function CreateAccount({ navigation }: any) {
     setPass(evt.nativeEvent.text)
   }
 
-  const handleCreateUser = () => {
+  // const handleCreateUser = () => {
     // createUserWithEmailAndPassword(auth, username, pass)
     // .then((userCredential) => {
     //   const current = userCredential.user
@@ -46,7 +78,7 @@ export default function CreateAccount({ navigation }: any) {
 
     //   console.error(error)
     // })
-  }
+  // }
 
   // if (!user) {
     return (

@@ -1,13 +1,10 @@
 const app = require('express')();
-require('./Store');
-require('./User');
+const { Owner, Store } = require('./Models');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const JWT = require('jsonwebtoken');
 const Bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-const Store = mongoose.model('store');
-const User = mongoose.model('user');
 const db = mongoose.connection;
 const MONGODB_URI_PASS = process.env.PASSWORD;
 const PORT = process.env.PORT;
@@ -15,76 +12,27 @@ const JWT_SECRET = 'psmR3Hu0ihHkfqZymo1m';
 
 app.use(bodyParser.json());
 
-// GET all stores
-app.get('/stores', async (req, res, next) => {
-  try {
-    const stores = await Store.find();
-    res.send(stores);
-  } catch (e) {
-    next(e);
-  }
-});
+app.use('/api', require('./api'));
 
-// GET one store by params id
-app.get('/stores/:id', async (req, res, next) => {
-  try {
-    const store = await Store.findById(req.params.id);
-    res.send(store);
-  } catch (e) {
-    next(e);
-  }
-});
-// PUT update route by params id
-app.put('/update/:id', async (req, res, next) => {
-  try {
-    const { name, phone, address, status } = req.body;
-    const store = await Store.findById(req.params.id);
+// // GET all stores
+// app.get('/stores', async (req, res, next) => {
+//   try {
+//     const stores = await Store.find();
+//     res.send(stores);
+//   } catch (e) {
+//     next(e);
+//   }
+// });
 
-    if (name) {
-      store.name = name;
-    }
-    if (phone) {
-      store.phone = phone;
-    }
-    if (address) {
-      store.address = address;
-    }
-    if (store.status !== status) {
-      store.status === status;
-    }
-
-    await store.save().then(res.send(store));
-  } catch (e) {
-    next(e);
-  }
-});
-
-// POST route by req.body
-app.post('/send', async (req, res, next) => {
-  try {
-    const { name, phone, address, status } = req.body;
-    const store = await new Store({
-      name,
-      phone,
-      address,
-      status,
-    });
-    await store.save().then(res.send('Successfully posted'));
-  } catch (e) {
-    next(e);
-  }
-});
-
-// DELETE route by params id
-app.delete('/delete/:id', async (req, res, next) => {
-  try {
-    await Store.findByIdAndDelete(req.params.id).then(
-      res.send('Successfully deleted')
-    );
-  } catch (e) {
-    next(e);
-  }
-});
+// // GET one store by params id
+// app.get('/stores/:id', async (req, res, next) => {
+//   try {
+//     const store = await Store.findById(req.params.id);
+//     res.send(store);
+//   } catch (e) {
+//     next(e);
+//   }
+// });
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -93,44 +41,59 @@ app.use((err, req, res, next) => {
     .send(err.message || "Internal server error, you're fucked!");
 });
 
-// User SIGNUP POST
-app.post('/user/signup', async (req, res, next) => {
+// Owner SIGNUP POST
+app.post('/owner/signup', async (req, res, next) => {
   if (!req.body.email || !req.body.password) {
     res.json({ success: false, error: 'Missing Parameters' });
     return;
   }
   try {
-    const user = await new User({
+    const owner = await new Owner({
+      _id: new mongoose.Types.ObjectId(),
       email: req.body.email,
       password: Bcrypt.hashSync(req.body.password, 10),
     });
-    await user.save().then((user) => {
-      const token = JWT.sign({ id: user._id, email: user.email }, JWT_SECRET);
-      res.json({ success: true, token: token, user: user });
+    await owner.save().then((owner) => {
+      // TEST STORE CREATE ON USER
+      const store1 = new Store({
+        name: 'TestStore1',
+        address: '365 P.O.S. Dr',
+        owner: owner._id,
+        phone: '8059159336',
+        status: 'online',
+      });
+      store1.save();
+
+      const token = JWT.sign({ id: owner._id, email: owner.email }, JWT_SECRET);
+      console.log('successful SIGN UP with owner: ', owner.email);
+      res.send({ owner: owner, token: token });
     });
   } catch (e) {
     next(e);
   }
 });
 
-// User LOGIN POST
-app.post('/user/login', async (req, res, next) => {
+// Owner LOGIN POST
+app.post('/owner/login', async (req, res, next) => {
   if (!req.body.email || !req.body.password) {
     res.json({ success: false, error: 'Missing parameters' });
     return;
   }
   try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) {
-      res.json({ success: false, error: 'User does not exist' });
+    const owner = await Owner.findOne({ email: req.body.email });
+    if (!owner) {
+      res.json({ success: false, error: 'Owner does not exist' });
       return;
     } else {
-      if (!Bcrypt.compareSync(req.body.password, user.password)) {
+      if (!Bcrypt.compareSync(req.body.password, owner.password)) {
         res.json({ success: false, error: 'Incorrect password' });
       } else {
-        const token = JWT.sign({ id: user.id, email: user.email }, JWT_SECRET);
-        console.log('successful log in with user: ', user.email);
-        res.send({ user: user, token: token });
+        const token = JWT.sign(
+          { id: owner.id, email: owner.email },
+          JWT_SECRET
+        );
+        console.log('successful log in with owner: ', owner.email);
+        res.send({ owner: owner, token: token });
       }
     }
   } catch (e) {

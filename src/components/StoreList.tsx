@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity } from 'react-native'
-import { StoresList, testStore }from '../../assets/data';
+import axios from 'axios'
 import { TStore } from '../types';
 import { storesListStyleSheet as styles} from '../styles/GlobalStyles';
 import Footer from './Footer';
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const renderStore = (store: TStore, idx: number, navigation: any) => {
   return (
@@ -25,15 +25,18 @@ const renderStore = (store: TStore, idx: number, navigation: any) => {
   )
 }
 
-
-export default function StoreList({ navigation }: any) {
-  const [stores, setStores] = useState([...StoresList])
-
-  // const testFunc = () => {
-  //   StoresList.push(testStore)
-  //   setStores([...stores, testStore])
-  //   console.log('new storesList: ', StoresList.length, stores.length)
-  // }
+export default function StoreList ({ navigation }: any) {
+  const [stores, setStores] = useState([])
+  const fetchStores = async () => {
+    await axios.get('http://localhost:8080/stores').then((response) => {
+      setStores(response.data)
+    })
+    
+  }
+  useEffect(() => {
+    fetchStores()
+  }, [])
+  
   return (
     <View style={{height:'100%'}}>
       
