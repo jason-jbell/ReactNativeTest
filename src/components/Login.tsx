@@ -4,14 +4,13 @@ import { Button, StyleSheet, Text, View, TextInput } from 'react-native';
 import Axios from 'axios'
 import { TOwner } from '../types';
 
-
 export default function Login({ navigation }: any, loggedInUser?: TOwner) {
   const [owner, setOwner] = useState<TOwner>()
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
   const [pending, setPending] = useState(true)
   const [test, setTest] = useState(0)
-
+  const [error, setError] = useState('')
 
   // if (loggedInUser && test === 0) {
   //   setUser(loggedInUser)
@@ -33,20 +32,27 @@ export default function Login({ navigation }: any, loggedInUser?: TOwner) {
 
   const handleUserChange = (evt:any) => {
     setUsername(evt.nativeEvent.text)
+    if (error) setError('')
   }
 
   const handlePassChange = (evt:any) => {
     setPass(evt.nativeEvent.text)
+    if (error) setError('')
   }
 
   const handleLogInSubmit = async () => {
     try {
-      // await fetch(
-      //   'http://localhost:8080/user/login', { method: 'POST', headers: { 'Content-Type': 'application/json', body: JSON.stringify({ email: username, password: pass}) }}
-      // ).then((response) => response.json())
-      const res = (await Axios.post('http://localhost:8080/owner/login', {email: username, password: pass})).data
-      setOwner(res.owner)
-      setTest(test + 1)
+      const res = (await Axios.post('http://localhost:8080/api/owners/login', {email: username, password: pass})).data
+      if (!res.success) {
+        setError(res.error)
+        setPass('')
+        return
+      }
+      else { 
+        setError('')
+        setOwner(res.owner)
+        setTest(test + 1)
+      }
       setUsername('')
       setPass('')
     } catch (e:any) {
@@ -62,9 +68,6 @@ export default function Login({ navigation }: any, loggedInUser?: TOwner) {
         </View>
       )
     }
-
-    //   console.error(error)
-    // })
   }
 
   if (!owner) {
@@ -74,6 +77,17 @@ export default function Login({ navigation }: any, loggedInUser?: TOwner) {
           POS 365 Login
         </Text>
         
+        {error ? (
+          <View>
+            <Text style={styles.error}>
+              {error}
+            </Text>
+          </View>
+        ) : (
+          <>
+          </>
+        )}
+
         <TextInput 
           style={styles.input}
           keyboardType='default'
@@ -170,6 +184,10 @@ const styles = StyleSheet.create({
     width: '0%',
     height: '1%',
     backgroundColor: 'transparent'
+  },
+  error: {
+    color: 'red',
+    marginBottom: '2%'
   }
 });
 

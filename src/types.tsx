@@ -1,8 +1,13 @@
 export type TOwner = {
+  _id?: string,
   email: string,
   password: string
 }
-
+export type TProps = {
+  owner: TOwner,
+  success: boolean,
+  token: string
+}
 export type TStore = {
   id: string,
   name: string,

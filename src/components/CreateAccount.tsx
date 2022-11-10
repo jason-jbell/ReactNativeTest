@@ -6,19 +6,20 @@ import Axios from 'axios'
 export default function CreateAccount({ navigation }: any) {
   const [username, setUsername] = useState('')
   const [pass, setPass] = useState('')
+  const [error, setError] = useState('')
 
   const handleCreateUser = async () => {
     try {
-      // await fetch(
-      //   'http://localhost:8080/user/login', { method: 'POST', headers: { 'Content-Type': 'application/json', body: JSON.stringify({ email: username, password: pass}) }}
-      // ).then((response) => response.json())
-      const res = (await Axios.post('http://localhost:8080/owner/signup', {email: username, password: pass})).data
+      const res = (await Axios.post('http://localhost:8080/api/owners/signup', {email: username, password: pass})).data
       // setUser(res.owner)
-        .then(() => {
-          console.log('AFTER AWAIT')
-          navigation.navigate('Login', {owner: res.owner, token: res.token})})
       setUsername('')
       setPass('')
+      if (!res.success) {
+        setError(res.error)
+      } else {
+        setError('')
+        navigation.navigate('Homepage', {owner: res.owner, token: res.token})
+      }
     } catch (e:any) {
         if (e.code === 'auth/email-already-in-use') {
           console.log('That email address is already in use!')
@@ -37,6 +38,10 @@ export default function CreateAccount({ navigation }: any) {
     // })
   }
 
+  useEffect(() => {
+    console.log('hit the error useEffect')
+    console.log(error)
+  }, [error])
   // const [pending, setPending] = useState(true)
 
   // useEffect(() => {
@@ -80,14 +85,25 @@ export default function CreateAccount({ navigation }: any) {
     // })
   // }
 
-  // if (!user) {
+  // if (!error) {
     return (
       <View style={styles.container}>
         
         <Text style={styles.title}>
           Account Sign-up
         </Text>
-        
+
+        {error ? (
+          <View>
+            <Text style={styles.error}>
+              {error}
+            </Text>
+          </View>
+        ) : (
+          <>
+          </>
+        )}
+
         <TextInput 
           style={styles.input}
           keyboardType='default'
@@ -125,18 +141,19 @@ export default function CreateAccount({ navigation }: any) {
         <StatusBar style='dark'/>
       </View>
     );
+  }
   // }
-  // return (
-  //   <View style={styles.container}>
-  //     <Text style={styles.title}>
-  //       Welcome {user.email}!
-  //     </Text>
-  //     <Button title='Homepage' onPress={() => navigation.navigate('SingleStore')} />
-  //     <Button title='Log out' onPress={handleSignOut} />
-  //   </View>
-  //   // navigation.navigate('SingleStore')
-  // )
-}  
+//   return (
+//     <View style={styles.container}>
+//       <Text style={styles.title}>
+//         Error! {error}
+//       </Text>
+//       {/* <Button title='Homepage' onPress={() => navigation.navigate('SingleStore')} />
+//       <Button title='Log out' onPress={handleSignOut} /> */}
+//     </View>
+//     // navigation.navigate('SingleStore')
+//   )
+// }  
 
 const styles = StyleSheet.create({
   container: {
@@ -172,6 +189,10 @@ const styles = StyleSheet.create({
     width: '0%',
     height: '1%',
     backgroundColor: 'transparent'
+  },
+  error: {
+    color: 'red',
+    marginBottom: '2%'
   }
 });
 

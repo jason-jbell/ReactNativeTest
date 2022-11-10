@@ -4,7 +4,6 @@ const router = require('express').Router();
 
 // /api/stores
 router.use('/stores', require('./stores'));
-
 router.use('/owners', require('./owners'));
 
 router.use((req, res, next) => {
